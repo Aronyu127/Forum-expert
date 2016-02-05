@@ -9,6 +9,7 @@ default: &default
   pool: 5
   timeout: 5000
   database: rails_exercise
+  
 
 
 development:
@@ -22,3 +23,6 @@ test:
 
 production:
   <<: *default
+  host: localhost
+  username: root
+  password: h63336597
