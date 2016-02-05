@@ -25,4 +25,3 @@ production:
   <<: *default
   host: localhost
   username: root
-  password: h63336597
