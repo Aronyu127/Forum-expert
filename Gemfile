@@ -40,9 +40,8 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # gem 'unicorn'
  gem "font-awesome-rails"
 # Use Capistrano for deployment
- gem 'capistrano-rails', group: :development
-
- gem 'capistrano-passenger', :group => :development
+gem 'capistrano-rails', :group => :development
+gem 'capistrano-passenger', :group => :development
 
 
 group :development, :test do
