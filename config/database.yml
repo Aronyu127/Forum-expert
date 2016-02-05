@@ -24,4 +24,4 @@ test:
 production:
   <<: *default
   host: localhost
-  username: root
+
