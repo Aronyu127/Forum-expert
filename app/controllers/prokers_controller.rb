@@ -10,7 +10,7 @@ class ProkersController < ApplicationController
 	end
 
 	def create
-		current_user.prokerbox.destroy
+		current_user.try(:prokerbox.destroy)
 		pb = Prokerbox.new(:user_id=>current_user.id)
     pb.save!
     pb.puts_card
