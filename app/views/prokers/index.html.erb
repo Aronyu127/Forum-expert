@@ -17,8 +17,8 @@
     中獎機率:<%= a%>
   </h3>
   <% if current_user.check_equal?%>
-    <%= link_to "射大",shot_prokers_path, :class => "btn btn-primary btn-lg", :chose=>"high"%>
-    <%= link_to "射小",shot_prokers_path, :class => "btn btn-danger btn-lg", :chose=>"low" %>  
+    <%= link_to "射大",shot_prokers_path(:chose=>"high"), :class => "btn btn-primary btn-lg"%>
+    <%= link_to "射小",shot_prokers_path(:chose=>"low"), :class => "btn btn-danger btn-lg" %>  
   <%else%>
     <%= link_to "射龍門",shot_prokers_path, :class => "btn btn-danger btn-lg" %> 
   <%end%>

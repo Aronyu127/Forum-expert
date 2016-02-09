@@ -56,28 +56,27 @@ class ProkersController < ApplicationController
 		@shot = @box.prokercards.sample
 		@shot_number = @box.prokercards.sample.number
 		@shot.destroy #抽出一張
-
     if params[:chose] #使用者兩張數字一樣
     	if @shot_number == current_user.first_number
         	@result = "中柱*3" #中柱了 不用管選大還小
-    	elsif params[:chose]="high" #選大
+    	elsif params[:chose]=="high" #選大
         if @shot_number > current_user.first_number
         	@result = "贏"
         end	
-    	else #選小
+   
+    	elsif params[:chose]=="low"#選小
     		if @shot_number < current_user.first_number
     			@result = "贏"
         end	
+   
     	end	
 	  elsif @shot_number < current_user.first_number && @shot_number > current_user.second_number
 	    @result = "贏"
 	  elsif @shot_number ==  current_user.first_number || @shot_number ==  current_user.second_number
       @result = "中柱"	  
 	  end 
-    
 	  #判斷結果
    
-       
     if  @result == "贏"
 	  	flash[:notice] = "發出一張#{@shot_number} 恭喜中獎！"
 	  elsif @result == "輸" 	
