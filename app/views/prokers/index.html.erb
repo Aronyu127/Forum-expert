@@ -1,0 +1,75 @@
+<h1>射龍門</h1>
+
+<%unless @box%>
+  <%= link_to "創建新牌組", prokers_path, :method => :post, :class=>"btn btn-primary" %>
+<%else%>
+  <%= link_to "重發一副牌", prokers_path, :method => :post, :class=>"btn btn-default" %> 
+  <%= link_to "抽兩張", set_scope_prokers_path, :class => "btn btn-primary"%>
+  
+<%end%>
+
+<%if current_user.first_number%>
+  <h2>
+    你身上的卡：<%= "#{current_user.first_number} 與 #{current_user.second_number}"%>
+  </h2>
+  <% a=@box.check_chance(current_user.first_number,current_user.second_number)%>
+  <h3>
+    中獎機率:<%= a%>
+  </h3>
+  <% if current_user.check_equal?%>
+    <%= link_to "射大",shot_prokers_path, :class => "btn btn-primary btn-lg", :chose=>"high"%>
+    <%= link_to "射小",shot_prokers_path, :class => "btn btn-danger btn-lg", :chose=>"low" %>  
+  <%else%>
+    <%= link_to "射龍門",shot_prokers_path, :class => "btn btn-danger btn-lg" %> 
+  <%end%>
+<%end%>
+
+<%if @box%>
+	<h2>你的牌組(<%= @box.prokercards.size%>)</h2>
+	<%#raise%>
+	<table class="table">
+		<tr>
+			<td>黑桃</td>
+			<% for i in 1..13 do%>
+			<td>
+			  <% if @box.prokercards.where(:position=>i).first %>
+			    <%#= @box.prokercards.where(:position=>i).first.name%>
+			    <%= i%>
+			  <%end%>
+			</td>
+			<%end%>
+		</tr>
+
+		<tr>
+			<td>紅心</td>
+			<% for i in 14..26 do%>
+			<td>
+			  <% if @box.prokercards.where(:position=>i).first %>
+			    <%= (i-13)%>
+			  <%end%>
+			</td>
+			<%end%>
+		</tr>
+		<tr>
+			<td>磚塊</td>
+			<% for i in 27..39 do%>
+			<td>
+			  <% if @box.prokercards.where(:position=>i).first %>
+			    <%= (i-26)%>
+			  <%end%>
+			</td>
+			<%end%>
+		</tr>
+
+		<tr>
+			<td>梅花</td>
+			<% for i in 40..52 do%>
+			<td>
+			  <% if @box.prokercards.where(:position=>i).first %>
+			    <%= (i-39)%>
+			  <%end%>
+			</td>
+			<%end%>
+		</tr>
+	</table>
+<%end%>	

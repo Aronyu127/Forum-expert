@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160205050451) do
+ActiveRecord::Schema.define(version: 20160209125235) do
 
   create_table "articles", force: :cascade do |t|
     t.string   "title"
@@ -28,6 +28,22 @@ ActiveRecord::Schema.define(version: 20160205050451) do
   add_index "articles", ["category_id"], name: "index_articles_on_category_id"
   add_index "articles", ["user_id"], name: "index_articles_on_user_id"
   add_index "articles", ["viewer"], name: "index_articles_on_viewer"
+
+  create_table "prokerboxes", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "lastcards",  default: 52
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+  end
+
+  create_table "prokercards", force: :cascade do |t|
+    t.string   "suit"
+    t.integer  "number"
+    t.integer  "prokerbox_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.integer  "position"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "name"
@@ -46,6 +62,8 @@ ActiveRecord::Schema.define(version: 20160205050451) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.integer  "first_number"
+    t.integer  "second_number"
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true
