@@ -1,7 +1,7 @@
 class ProkersController < ApplicationController
 
 	before_action :authenticate_user!
-
+  layout "proker"
 
 	def index
 		if current_user.prokerbox
@@ -68,7 +68,7 @@ class ProkersController < ApplicationController
     		if @shot_number < current_user.first_number
     			@result = "贏"
         end	
-   
+
     	end	
 	  elsif @shot_number < current_user.first_number && @shot_number > current_user.second_number
 	    @result = "贏"
