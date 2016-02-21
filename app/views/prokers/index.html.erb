@@ -33,9 +33,9 @@
 
 <%= form_tag input_card_prokers_path do %>
   <%= label :title, "選取兩張牌"%>
-  <%= select_tag "card1", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]})%>
-  <%= select_tag "card2", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]})%>
-  <%= submit_tag "送出", :class => "btn btn-info"%>
+  <%= select_tag "card1", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), :class => "form-control"%>
+  <%= select_tag "card2", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), :class => "form-control"%>
+  <%= submit_tag "送出", :class => "btn btn-success btn-lg"%>
 <% end%> 
 
 
