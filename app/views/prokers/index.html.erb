@@ -9,13 +9,13 @@
 	  <%= link_to "重發一副牌", prokers_path, :method => :post, :class=>"btn btn-default" %> 
 	  <%= link_to "抽兩張", set_scope_prokers_path, :class => "btn btn-primary"%>
   </div>
-<%end%>
+<%end%> 
 
 <%if current_user.first_number%>
   <h2>
     你身上的卡：<%= "#{current_user.first_number} 與 #{current_user.second_number}"%>
   </h2>
-  <% a=@box.check_chance(current_user.first_number,current_user.second_number)%>
+  <% a = @box.check_chance(current_user.first_number,current_user.second_number)%>
   <h2>
     最高中獎機率:<%= a%>
   </h2>
@@ -31,7 +31,12 @@
   <%end%>
 <%end%>
 
-
+<%= form_tag input_card_prokers_path do %>
+  <%= label :title, "選取兩張牌"%>
+  <%= select_tag "card1", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]})%>
+  <%= select_tag "card2", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]})%>
+  <%= submit_tag "送出", :class => "btn btn-info"%>
+<% end%> 
 
 
 <%if @box%>

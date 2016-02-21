@@ -18,6 +18,7 @@ Rails.application.routes.draw do
        collection do
          get:set_scope
          get:shot
+         post:input_card
        end
      end   
 

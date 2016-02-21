@@ -49,6 +49,35 @@ class ProkersController < ApplicationController
 	    redirect_to prokers_path
 	  end    
 	end	
+  
+  def input_card
+  	@box = current_user.prokerbox
+  	@card1 = params[:card1]
+  	@card2 = params[:card2]
+
+  	#把大的數字放前面 
+    if @card2 > @card1
+    	@card1 = params[:card2]
+  	  @card2 = params[:card1]
+  	end  
+
+	  if @card2 == @card1 && @box.prokercards.where(:number =>@card1).size < 2
+	    flash[:alert] = "撲克牌選擇有誤 請重新選擇"
+	    redirect_to prokers_path
+	  else  
+	  	card1 = @box.prokercards.find_by_number(@card1)
+	  	current_user.first_number = @card1
+	  	current_user.save!
+	  	card1.destroy
+
+	  	card2 = @box.prokercards.find_by_number(@card2)
+	  	current_user.second_number = @card2
+	  	current_user.save!
+	  	card2.destroy
+
+	  	redirect_to prokers_path
+    end
+  end	
 
 	def shot
 		@result = "輸"
