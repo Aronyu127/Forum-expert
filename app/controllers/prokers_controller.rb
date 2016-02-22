@@ -79,6 +79,15 @@ class ProkersController < ApplicationController
     end
   end	
 
+  def input_shot
+  	@box = current_user.prokerbox
+  	@shot = params[:shot]
+  	@card = @box.prokercards.find_by_number(@shot)
+  	@card.destroy
+
+    redirect_to prokers_path
+  end	
+
 	def shot
 		@result = "輸"
 		@box = current_user.prokerbox
