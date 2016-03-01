@@ -3,7 +3,7 @@ class Prokerbox < ActiveRecord::Base
 	belongs_to :user
   
 
-  def puts_card
+  def puts_52_card
 		for i in 1..13
 		    Prokercard.create(:number=>i,:suit=>"spades",:prokerbox_id=>self.id, :position=>i)
 		    Prokercard.create(:number=>i,:suit=>"hearts",:prokerbox_id=>self.id, :position=>(13+i))
@@ -33,6 +33,24 @@ class Prokerbox < ActiveRecord::Base
     probability = (chance.to_f/allcard.to_f).round(2)
 
 	end
+
+	def draw_two_card_from_prokerbox
+		unless @box.prokercards.size < 3
+			@two_card = []
+			@first_card = @box.prokercards.sample
+			two_card << @first_card.number
+	    @first_card.destroy
+
+			@second_card = @box.prokercards.sample
+			two_card << @second_card.number
+	    @second_card.destroy
+      
+      @two_card.sort! {|x,y| y <=> x}
+	  else
+	  	nil
+	  end
+	end	
+
 
 
 

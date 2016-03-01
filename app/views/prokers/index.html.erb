@@ -33,8 +33,8 @@
 
 <%= form_tag input_card_prokers_path do %>
   <%= label :title, "輸入身上的兩張牌"%>
-  <%= select_tag "card1", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), {:prompt => "選填", :class => "form-control"}%>
-  <%= select_tag "card2", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), {:prompt => "選填", :class => "form-control"}%>
+  <%= select_tag "number1", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), {:prompt => "選填", :class => "form-control"}%>
+  <%= select_tag "number2", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), {:prompt => "選填", :class => "form-control"}%>
   <%= submit_tag "送出", :class => "btn btn-success btn-lg"%>
 <%end%>
 <%= form_tag input_shot_prokers_path do %>

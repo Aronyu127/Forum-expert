@@ -1,48 +1,22 @@
 class ProkersController < ApplicationController
 
-	before_action :authenticate_user!
+	before_action :authenticate_user!, :set_prokerbox
+	before_action :destroy_original_prokerbox, :only => [:create] 
   layout "proker"
 
 	def index
-		if current_user.prokerbox
-		  @box = current_user.prokerbox
-		end 
 	end
 
 	def create
-		if current_user.prokerbox
-			current_user.prokerbox.destroy
-		end	
-
-		pb = Prokerbox.new(:user_id=>current_user.id)
-    pb.save!
-    pb.puts_card
+		prokerbox = Prokerbox.create!(:user_id => current_user.id)
+    prokerbox.puts_52_card
     redirect_to prokers_path
 	end	
 
 	def set_scope
-		@box = current_user.prokerbox
-
-		if @box.prokercards.size >= 3
-			@box = current_user.prokerbox
-			@first = @box.prokercards.sample
-			@first_number = @box.prokercards.sample.number
-	    @first.destroy
-
-			@second = @box.prokercards.sample
-			@second_number = @box.prokercards.sample.number
-	    @second.destroy
-      if @first.number > @second.number
-		    current_user.first_number = @first.number
-		    current_user.second_number = @second.number
-		    current_user.save!
-      else
-      	current_user.first_number = @second.number
-		    current_user.second_number = @first.number
-		    current_user.save!
-		  end  
-		  # 把大的數字放第一個
-
+		if @box.draw_two_card_from_prokerbox
+		  current_user.first_number = @two_card[0]
+		  current_user.second_number = @two_card[1]
 	    redirect_to prokers_path
 	  else
 	    flash[:alert] = "剩餘的卡片不足 請換一副新牌"	
@@ -51,7 +25,6 @@ class ProkersController < ApplicationController
 	end	
   
   def input_card
-  	@box = current_user.prokerbox
   	@card1 = params[:card1]
   	@card2 = params[:card2]
 
@@ -80,7 +53,6 @@ class ProkersController < ApplicationController
   end	
 
   def input_shot
-  	@box = current_user.prokerbox
   	@shot = params[:shot]
   	@card = @box.prokercards.find_by_number(@shot)
   	@card.destroy
@@ -90,7 +62,6 @@ class ProkersController < ApplicationController
 
 	def shot
 		@result = "輸"
-		@box = current_user.prokerbox
 		@shot = @box.prokercards.sample
 		@shot_number = @box.prokercards.sample.number
 		@shot.destroy #抽出一張
@@ -129,6 +100,15 @@ class ProkersController < ApplicationController
 
 
 	private		
-	
+	  def destroy_original_prokerbox
+	  	if current_user.prokerbox
+			  current_user.prokerbox.destroy
+			end  
+		end
+	  def set_prokerbox
+	  	if current_user.prokerbox 
+		    @box = current_user.prokerbox
+		  end
+	  end	
 
 end
