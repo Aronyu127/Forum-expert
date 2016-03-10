@@ -1,18 +1,24 @@
 class Prokerbox < ActiveRecord::Base
-	has_many :prokercards
+	has_many :prokercards, dependent: :destroy
 	belongs_to :user
   
 
-  def puts_52_card
-		for i in 1..13
-		    Prokercard.create(:number=>i,:suit=>"spades",:prokerbox_id=>self.id, :position=>i)
-		    Prokercard.create(:number=>i,:suit=>"hearts",:prokerbox_id=>self.id, :position=>(13+i))
-		    Prokercard.create(:number=>i,:suit=>"diamonds",:prokerbox_id=>self.id, :position=>(26+i))
-		    Prokercard.create(:number=>i,:suit=>"clubs",:prokerbox_id=>self.id, :position=>(39+i))
-		end
-	end	
-	
 
+  def puts_52_card(times)
+  	for i in 1..times
+			for i in 1..13
+			    Prokercard.create(:number=>i,:suit=>"spades",:prokerbox_id=>self.id, :position=>i)
+			    Prokercard.create(:number=>i,:suit=>"hearts",:prokerbox_id=>self.id, :position=>(13+i))
+			    Prokercard.create(:number=>i,:suit=>"diamonds",:prokerbox_id=>self.id, :position=>(26+i))
+			    Prokercard.create(:number=>i,:suit=>"clubs",:prokerbox_id=>self.id, :position=>(39+i))
+			end
+		end	
+	end	
+	 
+	def count_card(card_number)
+	  count = self.prokercards.where(:number => card_number).size
+    "#{card_number} (#{count})"
+  end
 	def check_chance(a,b)
 		allcard = self.prokercards.size
 	  if a != b
@@ -35,17 +41,17 @@ class Prokerbox < ActiveRecord::Base
 	end
 
 	def draw_two_card_from_prokerbox
-		unless @box.prokercards.size < 3
-			@two_card = []
-			@first_card = @box.prokercards.sample
-			two_card << @first_card.number
-	    @first_card.destroy
+		unless self.prokercards.size < 3
+			two_card = []
+			first_card = self.prokercards.sample
+			two_card << first_card.number
+	    first_card.destroy
 
-			@second_card = @box.prokercards.sample
-			two_card << @second_card.number
-	    @second_card.destroy
+			second_card = self.prokercards.sample
+			two_card << second_card.number
+	    second_card.destroy
       
-      @two_card.sort! {|x,y| y <=> x}
+      two_card.sort! {|x,y| y <=> x}
 	  else
 	  	nil
 	  end

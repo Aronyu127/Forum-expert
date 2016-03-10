@@ -1,22 +1,32 @@
 class ProkersController < ApplicationController
 
 	before_action :authenticate_user!, :set_prokerbox
-	before_action :destroy_original_prokerbox, :only => [:create] 
+	before_action :destroy_original_prokerbox, :only => [:create, :create_two_card] 
   layout "proker"
 
 	def index
 	end
 
 	def create
-		prokerbox = Prokerbox.create!(:user_id => current_user.id)
-    prokerbox.puts_52_card
+		@box = Prokerbox.create!(:user_id => current_user.id)
+    @box.puts_52_card(1)
+    @box.save
+    redirect_to prokers_path
+	end	
+
+	def create_two_card
+		@box = Prokerbox.create!(:user_id => current_user.id)
+    @box.puts_52_card(2)
+    @box.save
     redirect_to prokers_path
 	end	
 
 	def set_scope
-		if @box.draw_two_card_from_prokerbox
-		  current_user.first_number = @two_card[0]
-		  current_user.second_number = @two_card[1]
+		result = @box.draw_two_card_from_prokerbox
+		if result
+		  current_user.first_number = result[0]
+		  current_user.second_number = result[1]
+		  current_user.save!
 	    redirect_to prokers_path
 	  else
 	    flash[:alert] = "剩餘的卡片不足 請換一副新牌"	
@@ -25,13 +35,13 @@ class ProkersController < ApplicationController
 	end	
   
   def input_card
-  	@card1 = params[:card1]
-  	@card2 = params[:card2]
+  	@card1 = params[:number1]
+  	@card2 = params[:number2]
 
   	#把大的數字放前面 
     if @card2 > @card1
-    	@card1 = params[:card2]
-  	  @card2 = params[:card1]
+    	@card1 = params[:number2]
+  	  @card2 = params[:number1]
   	end  
 
 	  if @card2 == @card1 && @box.prokercards.where(:number =>@card1).size < 2
@@ -40,14 +50,13 @@ class ProkersController < ApplicationController
 	  else  
 	  	card1 = @box.prokercards.find_by_number(@card1)
 	  	current_user.first_number = @card1
-	  	current_user.save!
 	  	card1.destroy
 
-	  	card2 = @box.prokercards.find_by_number(@card2)
+     	card2 = @box.prokercards.find_by_number(@card2)
 	  	current_user.second_number = @card2
-	  	current_user.save!
-	  	card2.destroy
+      card2.destroy
 
+	  	current_user.save!
 	  	redirect_to prokers_path
     end
   end	
@@ -98,6 +107,17 @@ class ProkersController < ApplicationController
     redirect_to prokers_path 
 	end	
 
+  def reset_user_card
+  	if current_user.first_number 
+	    current_user.first_number = nil
+	  end
+
+    if current_user.second_number 
+	    current_user.second_number = nil
+	  end
+	  current_user.save!
+	  redirect_to prokers_path
+	end
 
 	private		
 	  def destroy_original_prokerbox
@@ -105,6 +125,7 @@ class ProkersController < ApplicationController
 			  current_user.prokerbox.destroy
 			end  
 		end
+
 	  def set_prokerbox
 	  	if current_user.prokerbox 
 		    @box = current_user.prokerbox

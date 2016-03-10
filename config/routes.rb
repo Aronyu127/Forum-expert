@@ -18,6 +18,8 @@ Rails.application.routes.draw do
        collection do
          get:set_scope
          get:shot
+         get:reset_user_card
+         get:create_two_card
          post:input_card
          post:input_shot
        end

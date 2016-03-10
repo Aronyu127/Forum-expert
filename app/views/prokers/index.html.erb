@@ -6,11 +6,11 @@
   </div>
 <%else%>
   <div class="card_button">
-	  <%= link_to "重發一副牌", prokers_path, :method => :post, :class=>"btn btn-default" %> 
+	  <%= link_to "重發一副牌(52張)", prokers_path, :method => :post, :class=>"btn btn-default" %> 
+	  <%= link_to "重發兩副牌(104張)", create_two_card_prokers_path, :class => "btn btn-default"%>
 	  <%= link_to "抽兩張", set_scope_prokers_path, :class => "btn btn-primary"%>
   </div>
 <%end%> 
-
 <%if current_user.first_number%>
   <h2>
     你身上的卡：<%= "#{current_user.first_number} 與 #{current_user.second_number}"%>
@@ -23,29 +23,28 @@
     <div class="shot">
 	    <%= link_to "射大",shot_prokers_path(:chose=>"high"), :class => "btn btn-primary btn-lg"%>
 	    <%= link_to "射小",shot_prokers_path(:chose=>"low"), :class => "btn btn-danger btn-lg" %>  
+	    <%= link_to "棄掉手上的卡", reset_user_card_prokers_path, :class => "btn btn-default"%>
 	  </div>  
   <%else%>
     <div class="shot">
       <%= link_to "射龍門",shot_prokers_path, :class => "btn btn-danger btn-lg" %>
+      <%= link_to "棄掉手上的卡", reset_user_card_prokers_path, :class => "btn btn-default"%>
     </div>
   <%end%>
 <%end%>
 
-<%= form_tag input_card_prokers_path do %>
-  <%= label :title, "輸入身上的兩張牌"%>
-  <%= select_tag "number1", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), {:prompt => "選填", :class => "form-control"}%>
-  <%= select_tag "number2", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), {:prompt => "選填", :class => "form-control"}%>
-  <%= submit_tag "送出", :class => "btn btn-success btn-lg"%>
-<%end%>
-<%= form_tag input_shot_prokers_path do %>
-  <%= label :shot, "輸入玩過的牌"%>
-  <%= select_tag "shot", options_for_select(@box.prokercards.collect{|c| [c.number,c.number]}), {:prompt => "選填", :class => "form-control"} %>
-
-  <%= submit_tag "送出", :class => "btn btn-success btn-lg"%>
-<%end%> 
-
-
 <%if @box%>
+	<%= form_tag input_card_prokers_path do %>
+	  <%= label :title, "輸入身上的兩張牌"%>
+	  <%= select_tag "number1", options_for_select(@box.prokercards.pluck(:number).uniq.sort.map{|number| [@box.count_card(number),number]}), {:prompt => "選填", :class => "form-control"}%>
+	  <%= select_tag "number2", options_for_select(@box.prokercards.pluck(:number).uniq.sort.map{|number| [@box.count_card(number),number]}), {:prompt => "選填", :class => "form-control"}%>
+	  <%= submit_tag "送出", :class => "btn btn-success btn-lg"%>
+	<%end%>
+	<%= form_tag input_shot_prokers_path do %>
+	  <%= label :shot, "輸入玩過的牌"%>
+	  <%= select_tag "shot", options_for_select(@box.prokercards.pluck(:number).uniq.sort.map{|number| [@box.count_card(number),number]}), {:prompt => "選填", :class => "form-control"}%>
+	  <%= submit_tag "送出", :class => "btn btn-success btn-lg"%>
+	<%end%> 
 
 <button type="button" class="btn btn-info seecard" data-toggle="modal" data-target=".bs-example-modal-lg">看看你的牌組(<%= @box.prokercards.size%>)</button>
 
@@ -57,9 +56,13 @@
 					<td>黑桃</td>
 					<% for i in 1..13 do%>
 					<td>
-					  <% if @box.prokercards.where(:position=>i).first %>
-					    <%#= @box.prokercards.where(:position=>i).first.name%>
-					    <%= i%>
+					  <%case @box.prokercards.where(:suit => "spades",:number => i).size%>
+					  <%when 2 %> 
+					    <%= "#{i}(2)" %>
+					  <%when 1 %>
+					    <%= i %>  
+					  <%when 0%>
+					    -  
 					  <%end%>
 					</td>
 					<%end%>
@@ -67,20 +70,30 @@
 
 				<tr>
 					<td>紅心</td>
-					<% for i in 14..26 do%>
+					<% for i in 1..13 do%>
 					<td>
-					  <% if @box.prokercards.where(:position=>i).first %>
-					    <%= (i-13)%>
+					  <%case @box.prokercards.where(:suit => "hearts",:number => i).size%>
+					  <%when 2 %> 
+					    <%= "#{i}(2)" %>
+					  <%when 1 %>
+					    <%= i %>  
+					  <%when 0%>
+					    -  
 					  <%end%>
 					</td>
 					<%end%>
 				</tr>
 				<tr>
 					<td>磚塊</td>
-					<% for i in 27..39 do%>
+					<% for i in 1..13 do%>
 					<td>
-					  <% if @box.prokercards.where(:position=>i).first %>
-					    <%= (i-26)%>
+					  <%case @box.prokercards.where(:suit => "diamonds",:number => i).size%>
+					  <%when 2 %> 
+					    <%= "#{i}(2)" %>
+					  <%when 1 %>
+					    <%= i %>  
+					  <%when 0%>
+					    -  
 					  <%end%>
 					</td>
 					<%end%>
@@ -88,10 +101,15 @@
 
 				<tr>
 					<td>梅花</td>
-					<% for i in 40..52 do%>
+					<% for i in 1..13 do%>
 					<td>
-					  <% if @box.prokercards.where(:position=>i).first %>
-					    <%= (i-39)%>
+					  <%case @box.prokercards.where(:suit => "clubs",:number => i).size%>
+					  <%when 2 %> 
+					    <%= "#{i}(2)" %>
+					  <%when 1 %>
+					    <%= i %>  
+					  <%when 0%>
+					    -  
 					  <%end%>
 					</td>
 					<%end%>
