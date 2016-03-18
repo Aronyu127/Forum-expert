@@ -34,6 +34,10 @@ gem 'lita'
 
  gem "paperclip"
 
+ gem 'simple_form'
+
+ gem "dalli"
+
  gem 'kaminari'
 
  gem 'faker'

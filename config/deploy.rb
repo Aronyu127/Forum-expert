@@ -9,7 +9,7 @@ set :repo_url, 'https://github.com/Aronyu127/Forum-expert.git'
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
- set :deploy_to, '/home/deploy/rails-exercise'
+ set :deploy_to, '/home/deploy/forum-expert'
 
 # Default value for :scm is :git
 # set :scm, :git
