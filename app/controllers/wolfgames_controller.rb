@@ -1,0 +1,2 @@
+class WolfgamesController < ApplicationController
+end

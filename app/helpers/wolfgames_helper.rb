@@ -1,0 +1,2 @@
+module WolfgamesHelper
+end
